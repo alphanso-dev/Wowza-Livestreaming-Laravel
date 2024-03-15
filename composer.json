@@ -1,0 +1,25 @@
+{
+    "name": "livestream/streaming",
+    "description": "This package is about live streaming",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Livestream\\Streaming\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alphansotech"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "extra":{
+        "laravel":{
+            "providers":[
+                "Livestream\\Streaming\\LiveStreamServiceProvider"
+            ]
+        }
+    }
+}
