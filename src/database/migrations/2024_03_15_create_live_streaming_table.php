@@ -12,27 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('live_streamings', function (Blueprint $table) {
-            $table->id('stream_id'); /* auto increment id */
-            $table->integer('user_id')->default(0); /* Authenticated user id */
-            $table->string('wowza_id')->default(null);
-            $table->string('stream_title')->default(null);
-            $table->string('description')->default(null);
-            $table->string('state');
-            $table->string('billing_mode')->default(null);
-            $table->string('broadcast_location')->default(null);
+            $table->id(); /* auto increment id */
+            $table->unsignedBigInteger('stream_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable(); /* Authenticated user id */
+            $table->string('wowza_id')->nullable();
+            $table->string('stream_title')->nullable();
+            $table->text('description')->nullable();
+            $table->string('state')->nullable();
+            $table->string('billing_mode')->nullable();
+            $table->string('broadcast_location')->nullable();
             $table->boolean('recording')->default(0); /* for true or false value */
-            $table->string('encoder')->default(null);
-            $table->string('delivery_method')->default(null);
-            $table->string('sdp_url')->default(null);
-            $table->string('application_name')->default(null);
-            $table->string('stream_name')->default(null);
-            $table->string('hls_playback_url')->default(null);
-            $table->string('stream_price')->default(null);
-            $table->string('price_currency')->default(null);
-            $table->string('image')->default(null);
-            $table->string('player_id')->default(null);
-            $table->date('stream_date')->default(null);
-     	    $table->time('stream_time')->default(null);
+            $table->string('encoder')->nullable();
+            $table->string('delivery_method')->nullable();
+            $table->string('sdp_url')->nullable();
+            $table->string('application_name')->nullable();
+            $table->string('stream_name')->nullable();
+            $table->string('hls_playback_url')->nullable();
+            $table->string('stream_price')->nullable();
+            $table->string('price_currency')->nullable();
+            $table->string('image')->nullable();
+            $table->string('player_id')->nullable();
+            $table->date('stream_date')->nullable();
+     	    $table->time('stream_time')->nullable();
   	        $table->boolean('stream_status')->default(0); /* for true or false value */
 	        $table->boolean('advertisement_status')->default(0); /* for true or false value */
             $table->timestamps();
