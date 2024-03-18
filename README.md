@@ -33,31 +33,31 @@ Live streaming Using Wowza - Laravel Package
     - $livestream->CameraEncoder() /* used to get all inbuilt camera encoder detail */
 
     - $livestream->StoreLiveStream($input) /* to create live stream */
-    - here you have to pass $input as a array in key, value format
-    - here are example with all parameters
-    - $input = [
-        "user_id"               => 1, /* here is your authenticated user id */
-        "sname"                  => "stream title",
-        "broadcast_location"    => "broadcast location name", /* this details you will get from '$livestream->BoradcastLocation()' this function */
-        "description"           => "description",
-        "encoder"               => "camera encoder name", /* this details you will get from '$livestream->CameraEncoder()' this function */
-        "stream_price"          => "5.45", /* you can use any price */
-        "price_currency"        => "USD", /* please use this as it is */
-        "image"                 => "image path",
-        "stream_date"           => "date",
-        "stream_time"           => "time"
-    ];
+        - here you have to pass $input as a array in key, value format
+        - here are example with all parameters
+        - $input = [
+            "user_id"               => 1, /* here is your authenticated user id */
+            "sname"                  => "stream title",
+            "broadcast_location"    => "broadcast location name", /* this details you will get from '$livestream->BoradcastLocation()' this function */
+            "description"           => "description",
+            "encoder"               => "camera encoder name", /* this details you will get from '$livestream->CameraEncoder()' this function */
+            "stream_price"          => "5.45", /* you can use any price */
+            "price_currency"        => "USD", /* please use this as it is */
+            "image"                 => "image path",
+            "stream_date"           => "date",
+            "stream_time"           => "time"
+        ];
 
     - $livestream->GetAllLiveStream($filterData=[], $pagination=true, $limit=10, $order_by=['created_at', 'desc']) /* use this to get live stream details */
-    - here all function parameters all optional, if you have no need then don't pass it
-    - $filterdata = [
-        'search_text' => 'stream title here',
-        'user_id' => 'user id which you pass',
-        'stream_status' => 'status of stream' /* here you have to pass 'started' or 'stopped' */
-    ];
-    - $pagination /* true or fale and default will be true */
-    - $limit /* default will be 10 */
-    - $order_bt = ['created_at', 'desc'] /* you can pass here 'created_at or updated_at'  'asc or desc' */
+        - here all function parameters all optional, if you have no need then don't pass it
+        - $filterdata = [
+            'search_text' => 'stream title here',
+            'user_id' => 'user id which you pass',
+            'stream_status' => 'status of stream' /* here you have to pass 'started' or 'stopped' */
+        ];
+        - $pagination /* true or fale and default will be true */
+        - $limit /* default will be 10 */
+        - $order_bt = ['created_at', 'desc'] /* you can pass here 'created_at or updated_at'  'asc or desc' */
 
     - $livestream->SingleLiveStream($stream_id, $wowza_id); /* you have to pass both parameter to get single live stream - stream_id and wowza_id should be get from list api */
 
