@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('live_streamings', function (Blueprint $table) {
             $table->id(); /* auto increment id */
-            $table->unsignedBigInteger('stream_id')->nullable();
-            $table->unsignedBigInteger('user_id')->nullable(); /* Authenticated user id */
-            $table->string('wowza_id')->nullable();
+            $table->unsignedBigInteger('stream_id')->nullable()->index();
+            $table->unsignedBigInteger('user_id')->nullable()->index(); /* Authenticated user id */
+            $table->string('wowza_id')->nullable()->index();
             $table->string('stream_title')->nullable();
             $table->text('description')->nullable();
-            $table->string('state')->nullable();
+            $table->string('state')->nullable()->index();
             $table->string('billing_mode')->nullable();
             $table->string('broadcast_location')->nullable();
             $table->boolean('recording')->default(0); /* for true or false value */
@@ -34,8 +34,8 @@ return new class extends Migration
             $table->string('player_id')->nullable();
             $table->date('stream_date')->nullable();
      	    $table->time('stream_time')->nullable();
-  	        $table->boolean('stream_status')->default(0); /* for true or false value */
-	        $table->boolean('advertisement_status')->default(0); /* for true or false value */
+  	        $table->boolean('stream_status')->default(0)->index(); /* for true or false value */
+	        $table->boolean('advertisement_status')->default(0)->index(); /* for true or false value */
             $table->timestamps();
         });
     }
