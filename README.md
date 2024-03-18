@@ -59,18 +59,18 @@ Live streaming Using Wowza - Laravel Package
     - $limit /* default will be 10 */
     - $order_bt = ['created_at', 'desc'] /* you can pass here 'created_at or updated_at'  'asc or desc' */
 
-    - $livestream->SingleLiveStream($user_id, $wowza_id); /* you have to pass both parameter to get single live stream */
+    - $livestream->SingleLiveStream($stream_id, $wowza_id); /* you have to pass both parameter to get single live stream - stream_id and wowza_id should be get from list api */
 
-    - $livestream->UpdateLiveStream($input, $user_id, $wowza_id); /* you have to pass all parameter and you can get reference from above functions for parameter value */
+    - $livestream->UpdateLiveStream($input, $stream_id, $wowza_id); /* you have to pass all parameter and you can get reference from above functions for parameter value - stream_id and wowza_id should be get from list api */
 
-    - $livestream->RemoveLiveStream($user_id, $wowza_id); /* To remove live stream permanently */
+    - $livestream->RemoveLiveStream($stream_id, $wowza_id); /* To remove live stream permanently - stream_id and wowza_id should be get from list api */
 
-    - $livestream->StartLiveStream($user_id, $wowza_id); /* You can start live stream with this function */
+    - $livestream->StartLiveStream($stream_id, $wowza_id); /* You can start live stream with this function - stream_id and wowza_id should be get from list api */
 
-    - $livestream->PublishLiveStream($user_id, $wowza_id); /* after start live stream you have to call this function to publish and check live stream started or not */
+    - $livestream->PublishLiveStream($stream_id, $wowza_id); /* after start live stream you have to call this function to publish and check live stream started or not - stream_id and wowza_id should be get from list api */
 
-    - $livestream->StopLiveStream($user_id, $wowza_id); /* To stop started live stream */
+    - $livestream->StopLiveStream($stream_id, $wowza_id); /* To stop started live stream - stream_id and wowza_id should be get from list api */
 
-    - $livestream->StatusLiveStream($user_id, $wowza_id); /* To check the status of live stream like 'started' or 'stopped' */
+    - $livestream->StatusLiveStream($stream_id, $wowza_id); /* To check the status of live stream like 'started' or 'stopped' - stream_id and wowza_id should be get from list api */
 
-    - $livestream->StatisticsLiveStream($user_id, $wowza_id); /* To check the statistics of live stream which will work only for strated live stream */
+    - $livestream->StatisticsLiveStream($stream_id, $wowza_id); /* To check the statistics of live stream which will work only for strated live stream - stream_id and wowza_id should be get from list api */
