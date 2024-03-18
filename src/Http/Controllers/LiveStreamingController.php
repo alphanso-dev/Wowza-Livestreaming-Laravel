@@ -121,7 +121,9 @@ class LiveStreamingController extends Controller{
                 $output = $this->wowzalivestream->WowzaLiveStreamApiCreate($inputdata);
                 if(isset($output->live_stream)) {
                     $outputData = $output->live_stream;
+                    $stream_id = (int)RendomString(10, 'number');
                     $inputStore = [
+                        'stream_id' => $stream_id,
                         'user_id' => $input['user_id'],
                         'wowza_id' => $outputData->id,
                         'stream_title' => $outputData->name,
@@ -192,9 +194,9 @@ class LiveStreamingController extends Controller{
     }
 
     /* Get Single Live Stream  */
-    public function GetSingleLiveStream($user_id, $wowza_id){
+    public function GetSingleLiveStream($stream_id, $wowza_id){
         /* model call */
-        $singleStream = $this->livestreammodel->GetSingleData($user_id, $wowza_id);
+        $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
         if(!is_null($singleStream)){
             $wowzaData = $this->wowzalivestream->WowzaLiveStreamApiSingle($wowza_id);
             $this->message = "Live stream found.";
@@ -209,12 +211,12 @@ class LiveStreamingController extends Controller{
     }
 
     /* Update live stream */
-    public function update($input, $user_id, $wowza_id){
+    public function update($input, $stream_id, $wowza_id){
         if(is_array($input)){
             $checkParameters = $this->checkUpdateParameters($input);
             if($checkParameters['status'] == 1){
                 /* model call */
-                $singleStream = $this->livestreammodel->GetSingleData($user_id, $wowza_id);
+                $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
                 if(!is_null($singleStream) && $singleStream->state == 'stopped'){
                     $inputdata['live_stream'] = [
                         "name"                  => $input['sname'],
@@ -253,7 +255,7 @@ class LiveStreamingController extends Controller{
                             'stream_time' => $input['stream_time']
                         ];
                         /* model call */
-                        $update = $this->livestreammodel->UpdateData($inputStore, $user_id, $wowza_id);
+                        $update = $this->livestreammodel->UpdateData($inputStore, $stream_id, $wowza_id);
                         if($update) {
                             $this->message = "Live Streaming update successully.";
                             $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
@@ -292,14 +294,14 @@ class LiveStreamingController extends Controller{
     }
 
     /* Remove Live Stream */
-    public function remove($user_id, $wowza_id){
+    public function remove($stream_id, $wowza_id){
         /* model call */
-        $singleStream = $this->livestreammodel->GetSingleData($user_id, $wowza_id);
+        $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
         if(!is_null($singleStream) && $singleStream->state == 'stopped'){
             $output = $this->wowzalivestream->WowzaLiveStreamApiRemove($wowza_id);
             if($output == null){
                 /* model call */
-                $delete = $this->livestreammodel->DeleteData($user_id, $wowza_id);
+                $delete = $this->livestreammodel->DeleteData($stream_id, $wowza_id);
                 $this->message = "Live stream remove successfully.";
                 $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
             }else{
@@ -320,17 +322,17 @@ class LiveStreamingController extends Controller{
     }
 
     /* Start live stream */
-    public function start($user_id, $wowza_id){
-        $streamData = $this->GetSingleLiveStream($user_id, $wowza_id);
+    public function start($stream_id, $wowza_id){
+        $streamData = $this->GetSingleLiveStream($stream_id, $wowza_id);
         if($streamData['status'] == 1 && isset($streamData['data']->state) && $streamData['data']->state == 'stopped'){
             /* model call */
             $output = $this->wowzalivestream->WowzaLiveStreamApiStart($wowza_id);
             if(isset($output->live_stream) && $output->live_stream->state == 'starting'){
                 $inputStore = ['state' => 'started', 'stream_status' => 1];
                 /* model call */
-                $update = $this->livestreammodel->UpdateData($inputStore, $user_id, $wowza_id);
+                $update = $this->livestreammodel->UpdateData($inputStore, $stream_id, $wowza_id);
                 do {
-                    $streamStatus = $this->status($user_id,$wowza_id);
+                    $streamStatus = $this->status($stream_id,$wowza_id);
                 } while ($streamStatus['status'] == 1 && isset($streamStatus['data']->live_stream) && $streamStatus['data']->live_stream->state != 'started');
 
                 $this->message = "Live stream started";
@@ -353,12 +355,12 @@ class LiveStreamingController extends Controller{
     }
 
     /* Publish live stream */
-    public function publish($user_id, $wowza_id){
-        $streamData = $this->GetSingleLiveStream($user_id, $wowza_id);
+    public function publish($stream_id, $wowza_id){
+        $streamData = $this->GetSingleLiveStream($stream_id, $wowza_id);
         if($streamData['status'] == 1){
             $getStream = $this->wowzalivestream->WowzaLiveStreamApiSingle($wowza_id);
             if(isset($getStream->live_stream)) {
-                $streamStatus = $this->status($user_id,$wowza_id);
+                $streamStatus = $this->status($stream_id,$wowza_id);
                 if($streamStatus['status'] == 1 && isset($streamStatus['data']->live_stream) && $streamStatus['data']->live_stream->state != 'stopped'){
                     $this->status_code = 202;
                     $this->message = "Live Streaming is not started please try again.";
@@ -367,11 +369,11 @@ class LiveStreamingController extends Controller{
                 if(isset($streamStatus['data']->live_stream->state)){
                     if($streamStatus['data']->live_stream->state == 'started' || $streamStatus['data']->live_stream->state == 'starting' ){
                         do {
-                            $streamStatusCheck = $this->status($user_id,$wowza_id);
+                            $streamStatusCheck = $this->status($stream_id,$wowza_id);
                         } while ($streamStatus['status'] == 1 && isset($streamStatus['data']->live_stream) && $streamStatus['data']->live_stream->state != 'started');
 
                         $this->message = "Live stream published";
-                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => ['user_id' => $user_id, 'stream_data' => '']];
+                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => ['stream_id' => $stream_id, 'stream_data' => '']];
                     }else{
                         $this->status_code = 202;
                         $this->message = "Live Streaming is not started please try again.";
@@ -400,14 +402,14 @@ class LiveStreamingController extends Controller{
     }
 
     /* Stop live stream */
-    public function stop($user_id, $wowza_id){
-        $streamData = $this->GetSingleLiveStream($user_id, $wowza_id);
+    public function stop($stream_id, $wowza_id){
+        $streamData = $this->GetSingleLiveStream($stream_id, $wowza_id);
         if($streamData['status'] == 1 && isset($streamData['data']->state) && $streamData['data']->state == 'started'){
             $output = $this->wowzalivestream->WowzaLiveStreamApiStop($wowza_id);
             if(isset($output->live_stream) && $output->live_stream->state == 'stopped'){
                 $inputdata = ['state' => 'stopped', 'stream_status' => 0, 'advertisement_status' => 0];
                 /* model call */
-                $update = $this->livestreammodel->UpdateData($inputdata, $user_id, $wowza_id);
+                $update = $this->livestreammodel->UpdateData($inputdata, $stream_id, $wowza_id);
                 $this->message = "Live stream stopped.";
                 $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
             }else{
@@ -424,8 +426,8 @@ class LiveStreamingController extends Controller{
     }
 
     /* Status of live stream */
-    public function status($user_id, $wowza_id){
-        $streamData = $this->GetSingleLiveStream($user_id, $wowza_id);
+    public function status($stream_id, $wowza_id){
+        $streamData = $this->GetSingleLiveStream($stream_id, $wowza_id);
         if($streamData['status'] == 1){
             /* model call */
             $output = $this->wowzalivestream->WowzaLiveStreamApiStatus($wowza_id);
@@ -450,8 +452,8 @@ class LiveStreamingController extends Controller{
     }
 
     /* Statistics of live stream */
-    public function statistics($user_id, $wowza_id){
-        $streamData = $this->GetSingleLiveStream($user_id, $wowza_id);
+    public function statistics($stream_id, $wowza_id){
+        $streamData = $this->GetSingleLiveStream($stream_id, $wowza_id);
         if($streamData['status'] == 1){
             /* model call */
             $ingestoutput = $this->wowzalivestream->WowzaLiveStreamApiIngestAnalyticsData($wowza_id);

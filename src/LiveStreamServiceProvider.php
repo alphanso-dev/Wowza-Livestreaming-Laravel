@@ -12,6 +12,10 @@ class LiveStreamServiceProvider extends ServiceProvider{
         $this->publishes([
             __DIR__.'/database/migrations/' => database_path('migrations')
         ], 'livestream-migration');
+
+        if(file_exists(__DIR__.'/Helper/helper.php')){
+            include_once(__DIR__.'/Helper/helper.php');
+        }
     }
 
     public function register(){

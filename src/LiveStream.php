@@ -48,50 +48,50 @@ class LiveStream{
     }
 
     /* Get Single Live Stream  */
-    public function SingleLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->GetSingleLiveStream($user_id, $wowza_id);
+    public function SingleLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->GetSingleLiveStream($stream_id, $wowza_id);
         return $response;
     }
 
     /* Update live stream */
-    public function UpdateLiveStream($input, $user_id, $wowza_id){
-        $response = $this->livestream->update($input, $user_id, $wowza_id);
+    public function UpdateLiveStream($input, $stream_id, $wowza_id){
+        $response = $this->livestream->update($input, $stream_id, $wowza_id);
         return $response;
     }
 
     /* Remove Live Stream */
-    public function RemoveLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->remove($user_id, $wowza_id);
+    public function RemoveLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->remove($stream_id, $wowza_id);
         return $response;
     }
 
     /* Start live stream */
-    public function StartLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->start($user_id, $wowza_id);
+    public function StartLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->start($stream_id, $wowza_id);
         return $response;
     }
 
     /* Publish Live Stream */
-    public function PublishLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->publish($user_id, $wowza_id);
+    public function PublishLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->publish($stream_id, $wowza_id);
         return $response;
     }
 
     /* Stop live stream */
-    public function StopLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->stop($user_id, $wowza_id);
+    public function StopLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->stop($stream_id, $wowza_id);
         return $response;
     }
 
     /* Status of live stream */
-    public function StatusLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->status($user_id, $wowza_id);
+    public function StatusLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->status($stream_id, $wowza_id);
         return $response;
     }
 
     /* Statistics of live stream */
-    public function StatisticsLiveStream($user_id, $wowza_id){
-        $response = $this->livestream->statistics($user_id, $wowza_id);
+    public function StatisticsLiveStream($stream_id, $wowza_id){
+        $response = $this->livestream->statistics($stream_id, $wowza_id);
         return $response;
     }
 }

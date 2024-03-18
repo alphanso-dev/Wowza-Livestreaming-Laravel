@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Livestream\\Streaming\\": "src/"
-        }
+        },
+        "files":[
+            "livestream/streaming/src/Helper/helper.php"
+        ]
     },
     "authors": [
         {

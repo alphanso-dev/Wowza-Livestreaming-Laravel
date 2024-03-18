@@ -11,8 +11,8 @@ class LiveStreaming extends Model
     protected $primaryKey = 'stream_id';
 
     protected $fillable = [
+        'stream_id',
         'user_id',
-		'stream_id',
 		'wowza_id',
 		'stream_title',
 		'description',
@@ -40,14 +40,14 @@ class LiveStreaming extends Model
         return static::create(\Arr::only($input, $this->fillable));
     }
 
-    function UpdateData($input, $user_id, $wowza_id)
+    function UpdateData($input, $stream_id, $wowza_id)
 	{
-		return static::where(['user_id' => $user_id, 'wowza_id' => $wowza_id])->update(\Arr::only($input, $this->fillable));
+		return static::where(['stream_id' => $stream_id, 'wowza_id' => $wowza_id])->update(\Arr::only($input, $this->fillable));
 	}
 
-    function DeleteData($user_id, $wowza_id)
+    function DeleteData($stream_id, $wowza_id)
 	{
-		return static::where(['user_id' => $user_id, 'wowza_id' => $wowza_id])->delete();
+		return static::where(['stream_id' => $stream_id, 'wowza_id' => $wowza_id])->delete();
 	}
 
     function ListData($filterData = [], $paginate = 'true', $limit = 10, $order_by = ['created_at', 'desc'])
@@ -68,9 +68,9 @@ class LiveStreaming extends Model
 		return $output;
 	}
 
-    function GetSingleData($user_id, $wowza_id)
+    function GetSingleData($stream_id, $wowza_id)
 	{
-		return static::where(['user_id' => $user_id, 'wowza_id' => $wowza_id])->first();
+		return static::where(['stream_id' => $stream_id, 'wowza_id' => $wowza_id])->first();
 	}
 
     public function FilterData($data, $filterData){
