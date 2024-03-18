@@ -24,15 +24,15 @@ Live streaming Using Wowza - Laravel Package
 
     - add this code at start of your page 'use Livestream\Streaming\LiveStream'
 
-    - create object of class '$livestream = new LiveStream()'
+    - create object of class '$livestream = new LiveStream();'
 
     - now you can call any functions from library which is given below
 
-    - $livestream->BoradcastLocation() /* used to get all inbuilt broadcast location detail */
+    - $livestream->BoradcastLocation(); /* used to get all inbuilt broadcast location detail */
 
-    - $livestream->CameraEncoder() /* used to get all inbuilt camera encoder detail */
+    - $livestream->CameraEncoder(); /* used to get all inbuilt camera encoder detail */
 
-    - $livestream->StoreLiveStream($input) /* to create live stream */
+    - $livestream->StoreLiveStream($input); /* to create live stream */
         - here you have to pass $input as a array in key, value format
         - here are example with all parameters
         - $input = [
@@ -48,7 +48,7 @@ Live streaming Using Wowza - Laravel Package
             "stream_time"           => "time"
         ];
 
-    - $livestream->GetAllLiveStream($filterData=[], $pagination=true, $limit=10, $order_by=['created_at', 'desc']) /* use this to get live stream details */
+    - $livestream->GetAllLiveStream($filterData=[], $pagination=true, $limit=10, $order_by=['created_at', 'desc']); /* use this to get live stream details */
         - here all function parameters all optional, if you have no need then don't pass it
         - $filterdata = [
             'search_text' => 'stream title here',
