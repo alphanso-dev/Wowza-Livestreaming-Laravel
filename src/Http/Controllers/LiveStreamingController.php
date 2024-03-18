@@ -149,6 +149,11 @@ class LiveStreamingController extends Controller{
                         $this->message = "Live Streaming create successully.";
                         $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
                     }else{
+                        /* Wowza stream should be remove */
+                        do{
+                            $removeOutput = $this->wowzalivestream->WowzaLiveStreamApiRemove($outputData->id);
+                        }while($removeOutput != null);
+
                         $this->message = 'Live Streaming not crete please try again.';
                         $this->status_code = 202;
                         $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
