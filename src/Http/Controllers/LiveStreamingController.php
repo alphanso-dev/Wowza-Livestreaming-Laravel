@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Livestream\Streaming\Http\Controllers\WowzaLiveStreamingController;
 use Livestream\Streaming\LiveStream;
 use Livestream\Streaming\Models\LiveStreaming;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class LiveStreamingController extends Controller{
 
@@ -99,83 +101,95 @@ class LiveStreamingController extends Controller{
     }
 
     /* Store live stream */
-    public function store($input){
-        if(is_array($input)){
-            $checkParameters = $this->checkCreateParameters($input);
-            if($checkParameters['status'] == 1){
-                $inputdata['live_stream'] = [
-                    "name"                  => $input['sname'],
-                    "broadcast_location"    => $input['broadcast_location'],
-                    "description"           => $input['description'],
-                    "transcoder_type"       => "transcoded",
-                    "billing_mode"          => "pay_as_you_go",
-                    "encoder"               => $input['encoder'],
-                    "disable_authentication" => true,
-                    "aspect_ratio_height"   => "720",
-                    "aspect_ratio_width"    => "1280",
-                    "delivery_method"       => "push",
-                    "player_responsive"     => true,
-                    "low_latency"           => true,
-                    "recording"             => false
-                ];
-                $output = $this->wowzalivestream->WowzaLiveStreamApiCreate($inputdata);
-                if(isset($output->live_stream)) {
-                    $outputData = $output->live_stream;
-                    $stream_id = (int)RendomString(10, 'number');
-                    $inputStore = [
-                        'stream_id' => $stream_id,
-                        'user_id' => $input['user_id'],
-                        'wowza_id' => $outputData->id,
-                        'stream_title' => $outputData->name,
-                        'description' => $outputData->description,
-                        'state' => $outputData->state,
-                        'billing_mode' => $outputData->billing_mode,
-                        'broadcast_location' => $outputData->broadcast_location,
-                        'recording' => $outputData->recording,
-                        'encoder' => $outputData->encoder,
-                        'delivery_method' => $outputData->delivery_method,
-                        'sdp_url' => $outputData->source_connection_information->sdp_url,
-                        'application_name' => $outputData->source_connection_information->application_name,
-                        'stream_name' => $outputData->source_connection_information->stream_name,
-                        'hls_playback_url' => $outputData->hls_playback_url,
-                        'stream_price' => $input['stream_price'],
-                        'price_currency' => $input['price_currency'],
-                        'image' => $input['image'],
-                        'player_id' => $outputData->player_id,
-                        'stream_date' => $input['stream_date'],
-                        'stream_time' => $input['stream_time']
-                    ];
-                    /* model call */
-                    $insert = $this->livestreammodel->InsertData($inputStore);
-                    if(isset($insert->wowza_id)) {
-                        $this->message = "Live Streaming create successully.";
-                        $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
-                    }else{
-                        /* Wowza stream should be remove */
-                        do{
-                            $removeOutput = $this->wowzalivestream->WowzaLiveStreamApiRemove($outputData->id);
-                        }while($removeOutput != null);
+    public function store(Request $request){
+        $input = $request->all();
+        $validator = Validator::make($request->all(), [
+            'user_id'               => 'required|integer',
+            'sname'			        => 'required|max:100',
+            'broadcast_location'	=> 'required',
+            'encoder'		        => 'required',
+            'description'			=> 'nullable|max:10000',
+            'image'					=> 'required|mimes:jpeg,png,jpg,gif|max:2048',
+            'stream_price'			=> 'nullable|decimal:0,2',
+            'price_currency'        => 'required',
+            'stream_date'			=> 'required|date',
+            'stream_time'			=> 'required',
+        ],[
+            'sname.required' => 'stream title field is required'
+        ]);
 
-                        $this->message = 'Live Streaming not crete please try again.';
-                        $this->status_code = 202;
-                        $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
-                    }
-                }else if(isset($output->meta)) {
-                    $this->message = $output->meta->message;
-                    $this->status_code = 202;
-                    $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+        if ($validator->fails()) {
+            $this->status_code = 202;
+            $this->message = $validator->errors()->first();
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+        }else{
+            $input['image'] = 'image path';
+            $inputdata['live_stream'] = [
+                "name"                  => $input['sname'],
+                "broadcast_location"    => $input['broadcast_location'],
+                "description"           => $input['description'],
+                "transcoder_type"       => "transcoded",
+                "billing_mode"          => "pay_as_you_go",
+                "encoder"               => $input['encoder'],
+                "disable_authentication" => true,
+                "aspect_ratio_height"   => "720",
+                "aspect_ratio_width"    => "1280",
+                "delivery_method"       => "push",
+                "player_responsive"     => true,
+                "low_latency"           => true,
+                "recording"             => false
+            ];
+            $output = $this->wowzalivestream->WowzaLiveStreamApiCreate($inputdata);
+            if(isset($output->live_stream)) {
+                $outputData = $output->live_stream;
+                $stream_id = (int)RendomString(10, 'number');
+                $inputStore = [
+                    'stream_id' => $stream_id,
+                    'user_id' => $input['user_id'],
+                    'wowza_id' => $outputData->id,
+                    'stream_title' => $outputData->name,
+                    'description' => $outputData->description,
+                    'state' => $outputData->state,
+                    'billing_mode' => $outputData->billing_mode,
+                    'broadcast_location' => $outputData->broadcast_location,
+                    'recording' => $outputData->recording,
+                    'encoder' => $outputData->encoder,
+                    'delivery_method' => $outputData->delivery_method,
+                    'sdp_url' => $outputData->source_connection_information->sdp_url,
+                    'application_name' => $outputData->source_connection_information->application_name,
+                    'stream_name' => $outputData->source_connection_information->stream_name,
+                    'hls_playback_url' => $outputData->hls_playback_url,
+                    'stream_price' => $input['stream_price'],
+                    'price_currency' => $input['price_currency'],
+                    'image' => $input['image'],
+                    'player_id' => $outputData->player_id,
+                    'stream_date' => $input['stream_date'],
+                    'stream_time' => $input['stream_time']
+                ];
+                /* model call */
+                $insert = $this->livestreammodel->InsertData($inputStore);
+                if(isset($insert->wowza_id)) {
+                    $this->message = "Live Streaming create successully.";
+                    $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
                 }else{
+                    /* Wowza stream should be remove */
+                    do{
+                        $removeOutput = $this->wowzalivestream->WowzaLiveStreamApiRemove($outputData->id);
+                    }while($removeOutput != null);
+
                     $this->message = 'Live Streaming not crete please try again.';
                     $this->status_code = 202;
                     $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                 }
+            }else if(isset($output->meta)) {
+                $this->message = $output->meta->message;
+                $this->status_code = 202;
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
             }else{
-                $response = $checkParameters;
+                $this->message = 'Live Streaming not crete please try again.';
+                $this->status_code = 202;
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
             }
-        }else{
-            $this->message = 'Pass parameters in array format.';
-            $this->status_code = 202;
-            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
         }
         return $response;
     }
@@ -211,82 +225,105 @@ class LiveStreamingController extends Controller{
     }
 
     /* Update live stream */
-    public function update($input, $stream_id, $wowza_id){
-        if(is_array($input)){
-            $checkParameters = $this->checkUpdateParameters($input);
-            if($checkParameters['status'] == 1){
-                /* model call */
-                $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
-                if(!is_null($singleStream) && $singleStream->state == 'stopped'){
-                    $inputdata['live_stream'] = [
-                        "name"                  => $input['sname'],
-                        "description"           => $input['description'],
-                        "transcoder_type"       => "transcoded",
-                        "billing_mode"          => "pay_as_you_go",
-                        "encoder"               => $input['encoder'],
-                        "disable_authentication" => true,
-                        "aspect_ratio_height"   => "720",
-                        "aspect_ratio_width"    => "1280",
-                        "delivery_method"       => "push",
-                        "player_responsive"     => true,
-                        "low_latency"           => true,
-                        "recording"             => false
-                    ];
-                    $output = $this->wowzalivestream->WowzaLiveStreamApiUpdate($inputdata, $wowza_id);
-                    if(isset($output->live_stream)) {
-                        $outputData = $output->live_stream;
-                        $inputStore = [
-                            'stream_title' => $outputData->name,
-                            'description' => $outputData->description,
-                            'state' => $outputData->state,
-                            'billing_mode' => $outputData->billing_mode,
-                            'recording' => $outputData->recording,
-                            'encoder' => $outputData->encoder,
-                            'delivery_method' => $outputData->delivery_method,
-                            'sdp_url' => $outputData->source_connection_information->sdp_url,
-                            'application_name' => $outputData->source_connection_information->application_name,
-                            'stream_name' => $outputData->source_connection_information->stream_name,
-                            'hls_playback_url' => $outputData->hls_playback_url,
-                            'stream_price' => $input['stream_price'],
-                            'price_currency' => $input['price_currency'],
-                            'image' => $input['image'],
-                            'player_id' => $outputData->player_id,
-                            'stream_date' => $input['stream_date'],
-                            'stream_time' => $input['stream_time']
+    public function update(Request $request, $stream_id, $wowza_id){
+        if(isset($stream_id) && is_numeric($stream_id)){
+            if(isset($wowza_id)){
+                $input = $request->all();
+                $validator = Validator::make($request->all(), [
+                    'user_id'               => 'required|integer',
+                    'sname'			        => 'required|max:100',
+                    'encoder'		        => 'required',
+                    'description'			=> 'nullable|max:10000',
+                    'image'					=> 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+                    'stream_price'			=> 'nullable|decimal:0,2',
+                    'price_currency'        => 'required',
+                    'stream_date'			=> 'required|date',
+                    'stream_time'			=> 'required',
+                ],[
+                    'sname.required' => 'stream title field is required'
+                ]);
+
+                if ($validator->fails()) {
+                    $this->status_code = 202;
+                    $this->message = $validator->errors()->first();
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                }else{
+                    $input['image'] = 'image path';
+                    /* model call */
+                    $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
+                    if(!is_null($singleStream) && $singleStream->state == 'stopped'){
+                        $inputdata['live_stream'] = [
+                            "name"                  => $input['sname'],
+                            "description"           => $input['description'],
+                            "transcoder_type"       => "transcoded",
+                            "billing_mode"          => "pay_as_you_go",
+                            "encoder"               => $input['encoder'],
+                            "disable_authentication" => true,
+                            "aspect_ratio_height"   => "720",
+                            "aspect_ratio_width"    => "1280",
+                            "delivery_method"       => "push",
+                            "player_responsive"     => true,
+                            "low_latency"           => true,
+                            "recording"             => false
                         ];
-                        /* model call */
-                        $update = $this->livestreammodel->UpdateData($inputStore, $stream_id, $wowza_id);
-                        if($update) {
-                            $this->message = "Live Streaming update successully.";
-                            $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                        $output = $this->wowzalivestream->WowzaLiveStreamApiUpdate($inputdata, $wowza_id);
+                        if(isset($output->live_stream)) {
+                            $outputData = $output->live_stream;
+                            $inputStore = [
+                                'stream_title' => $outputData->name,
+                                'description' => $outputData->description,
+                                'state' => $outputData->state,
+                                'billing_mode' => $outputData->billing_mode,
+                                'recording' => $outputData->recording,
+                                'encoder' => $outputData->encoder,
+                                'delivery_method' => $outputData->delivery_method,
+                                'sdp_url' => $outputData->source_connection_information->sdp_url,
+                                'application_name' => $outputData->source_connection_information->application_name,
+                                'stream_name' => $outputData->source_connection_information->stream_name,
+                                'hls_playback_url' => $outputData->hls_playback_url,
+                                'stream_price' => $input['stream_price'],
+                                'price_currency' => $input['price_currency'],
+                                'image' => $input['image'],
+                                'player_id' => $outputData->player_id,
+                                'stream_date' => $input['stream_date'],
+                                'stream_time' => $input['stream_time']
+                            ];
+                            /* model call */
+                            $update = $this->livestreammodel->UpdateData($inputStore, $stream_id, $wowza_id);
+                            if($update) {
+                                $this->message = "Live Streaming update successully.";
+                                $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                            }else{
+                                $this->message = 'Live Streaming not update please try again.';
+                                $this->status_code = 202;
+                                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                            }
+                        }else if(isset($output->meta)) {
+                            $this->message = $output->meta->message;
+                            $this->status_code = 202;
+                            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                         }else{
-                            $this->message = 'Live Streaming not update please try again.';
+                            $this->message = 'Live Streaming not crete please try again.';
                             $this->status_code = 202;
                             $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                         }
-                    }else if(isset($output->meta)) {
-                        $this->message = $output->meta->message;
+                    }else if(!is_null($singleStream) && $singleStream->state == 'started'){
                         $this->status_code = 202;
-                        $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        $this->message = "Live stream is started, please stop first and then update.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                     }else{
-                        $this->message = 'Live Streaming not crete please try again.';
                         $this->status_code = 202;
-                        $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        $this->message = "Live stream details not found.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                     }
-                }else if(!is_null($singleStream) && $singleStream->state == 'started'){
-                    $this->status_code = 202;
-                    $this->message = "Live stream is started, please stop first and then update.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
-                }else{
-                    $this->status_code = 202;
-                    $this->message = "Live stream details not found.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
                 }
             }else{
-                $response = $checkParameters;
+                $this->message = 'wowza_id is missing.';
+                $this->status_code = 202;
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];    
             }
         }else{
-            $this->message = 'Pass parameters in array format.';
+            $this->message = 'Either stream_id is missing or pass properly.';
             $this->status_code = 202;
             $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
         }
@@ -559,16 +596,16 @@ class LiveStreamingController extends Controller{
         if(isset($input['user_id']) && isset($input['sname']) && isset($input['broadcast_location']) && isset($input['description']) && isset($input['encoder']) && isset($input['stream_price']) && isset($input['price_currency']) && isset($input['image']) && isset($input['stream_date']) && isset($input['stream_time'])){
             if($input['user_id'] != null && $input['sname'] != null && $input['broadcast_location'] != null && $input['encoder'] != null && $input['stream_price'] != null && $input['price_currency'] != null && $input['stream_date'] != null && $input['stream_time'] != null){
                 $this->message = "Parameters properly set";
-                $response =  ['status' => $this->status_1, 'message' => $this->message];
+                $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
             }else{
                 $this->message = "This parameters value should be set: user_id, sname, broadcast_location, encoder, stream_price, price_currency, stream_date, stream_time";
                 $this->status_code = 202;
-                $response =  ['status' => $this->status_0, 'message' => $this->message];
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
             }
         }else{
             $this->message = "At least this parameters should be set: user_id, sname, broadcast_location, description, encoder, stream_price, price_currency, image, stream_date, stream_time";
             $this->status_code = 202;
-            $response =  ['status' => $this->status_0, 'message' => $this->message];
+            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
         }
         return $response;
     }
@@ -577,16 +614,16 @@ class LiveStreamingController extends Controller{
         if(isset($input['user_id']) && isset($input['sname']) && isset($input['description']) && isset($input['encoder']) && isset($input['stream_price']) && isset($input['price_currency']) && isset($input['image']) && isset($input['stream_date']) && isset($input['stream_time'])){
             if($input['user_id'] != null && $input['sname'] != null && $input['encoder'] != null && $input['stream_price'] != null && $input['price_currency'] != null && $input['stream_date'] != null && $input['stream_time'] != null){
                 $this->message = "Parameters properly set";
-                $response =  ['status' => $this->status_1, 'message' => $this->message];
+                $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
             }else{
                 $this->message = "This parameters value should be set: user_id, sname, encoder, stream_price, price_currency, stream_date, stream_time";
                 $this->status_code = 202;
-                $response =  ['status' => $this->status_0, 'message' => $this->message];
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
             }
         }else{
             $this->message = "At least this parameters should be set: user_id, sname, description, encoder, stream_price, price_currency, image, stream_date, stream_time";
             $this->status_code = 202;
-            $response =  ['status' => $this->status_0, 'message' => $this->message];
+            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
         }
         return $response;
     }
@@ -596,4 +633,12 @@ class LiveStreamingController extends Controller{
     | End:: Common Functions
     |-------------------------------------------------------------
     */
+
+    public function storeValidation($input){
+        if(isset($input['user_id'])){
+            
+        }else{
+            $message = "user_id parameter is missing";
+        }
+    }
 }

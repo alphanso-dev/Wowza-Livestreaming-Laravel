@@ -36,8 +36,8 @@ class LiveStream{
     }
 
     /* Store live stream */
-    public function StoreLiveStream($input){
-        $response = $this->livestream->store($input);
+    public function StoreLiveStream($request){
+        $response = $this->livestream->store($request);
         return $response;
     }
 
@@ -54,8 +54,8 @@ class LiveStream{
     }
 
     /* Update live stream */
-    public function UpdateLiveStream($input, $stream_id, $wowza_id){
-        $response = $this->livestream->update($input, $stream_id, $wowza_id);
+    public function UpdateLiveStream($request, $stream_id, $wowza_id){
+        $response = $this->livestream->update($request, $stream_id, $wowza_id);
         return $response;
     }
 
