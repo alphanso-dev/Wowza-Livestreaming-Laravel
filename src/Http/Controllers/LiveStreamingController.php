@@ -124,9 +124,9 @@ class LiveStreamingController extends Controller{
         ]);
 
         if ($validator->fails()) {
-            $this->status_code = 202;
-            $this->message = $validator->errors()->first();
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            $this->status_code = 422;
+            $this->message = "Validation failed";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
         }else{
             $input['image'] = 'image path';
             $inputdata['live_stream'] = [
@@ -207,8 +207,13 @@ class LiveStreamingController extends Controller{
         if(!is_array($order_by)){ $order_by = ['created_at', 'desc']; }
         /* model call */
         $data = $this->livestreammodel->ListData($filterData, $pagination, $limit, $order_by);
-        $this->message = "Live streams data found.";
-        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $data];
+        if(count($data) > 0){
+            $this->message = "Live streams data found.";
+            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $data];
+        }else{
+            $this->message = "Live streams data not available.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $data];
+        }
         return $response;
     }
 
@@ -249,9 +254,9 @@ class LiveStreamingController extends Controller{
                 ]);
 
                 if ($validator->fails()) {
-                    $this->status_code = 202;
-                    $this->message = $validator->errors()->first();
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    $this->status_code = 422;
+                    $this->message = "Validation failed";
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
                 }else{
                     $input['image'] = 'image path';
                     /* model call */
