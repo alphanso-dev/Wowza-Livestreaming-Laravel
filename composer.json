@@ -8,7 +8,7 @@
             "Livestream\\Streaming\\": "src/"
         },
         "files":[
-            "livestream/streaming/src/Helper/helper.php"
+            "src/Helper/helper.php"
         ]
     },
     "authors": [

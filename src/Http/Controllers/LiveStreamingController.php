@@ -16,10 +16,10 @@ class LiveStreamingController extends Controller{
     public $wowzalivestream;
 
     /* common global variables */
-    public $status_0;
-    public $status_1;
-    public $status_code;
-    public $message;
+    public $status_0 = 0;
+    public $status_1 = 1;
+    public $status_code = 202;
+    public $message = '';
     public $response;
 
     /* model global variable */
@@ -28,14 +28,19 @@ class LiveStreamingController extends Controller{
     public function __construct()
     {
         $this->wowzalivestream = new WowzaLiveStreamingController();
-
-        $this->status_0 = 0;
-        $this->status_1 = 1;
-        $this->status_code = 200;
-        $this->message = '';
-        $this->response = json_encode([]);
-
         $this->livestreammodel = new LiveStreaming();
+    }
+
+    public function ConfigError(){
+        $this->message = "Please publish the configuration file by running 'php artisan vendor:publish --tag=livestream-config'";
+        $this->status_code = 202;
+        $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+    }
+
+    public function TableError(){
+        $this->message = "Please publish the configuration file by running 'php artisan vendor:publish --tag=livestream-migration' and after that run 'php artisan migrate'";
+        $this->status_code = 202;
+        $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
     }
 
     /*
