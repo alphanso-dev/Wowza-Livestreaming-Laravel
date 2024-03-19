@@ -51,7 +51,7 @@ class LiveStreamingController extends Controller{
     */
 
     /* Broadcast location list */
-    public function BoradcastLocationList(){
+    public function BroadcastLocationList(){
         $broadcast_location = [
 			"asia_pacific_australia"	=> "Asia Pacific Australia",
 			"asia_pacific_india"		=> "Asia Pacific India",
@@ -71,7 +71,7 @@ class LiveStreamingController extends Controller{
 		];
         $this->message = "Broadcast Location found";
         $this->response = $broadcast_location;
-
+        
         return ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $this->response];
     }
 

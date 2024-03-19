@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
 class LiveStream{
     public $livestream;
     public $config_status = true;
-    public $table_status = false;
+    public $table_status = true;
     public function __construct()
     {
         if(is_null(config('livestream'))){
@@ -27,10 +27,10 @@ class LiveStream{
     }
 
     /* Broadcast location list */
-    public function BoradcastLocation(){
+    public function BroadcastLocation(){
         if($this->config_status == true){
             if($this->table_status == true){
-                $response = $this->livestream->BoradcastLocationList();
+                $response = $this->livestream->BroadcastLocationList();
             }else{
                 $response = $this->livestream->TableError();
             }
