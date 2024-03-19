@@ -55,10 +55,10 @@ class LiveStream{
     }
 
     /* Store live stream */
-    public function StoreLiveStream($request, string $image_path = ''){
+    public function StoreLiveStream(array $request=[]){
         if($this->config_status == true){
             if($this->table_status == true){
-                $response = $this->livestream->store($request, $image_path);
+                $response = $this->livestream->store($request);
             }else{
                 $response = $this->livestream->TableError();
             }
@@ -69,7 +69,7 @@ class LiveStream{
     }
 
     /* List of all live stream */
-    public function GetAllLiveStream(array $filterData=[], bool $pagination=true, int $limit=10, array $order_by=['created_at', 'desc']){
+    public function GetAllLiveStream(array $filterData = [], bool $pagination=true, int $limit=10, array $order_by=['created_at', 'desc']){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->listAll($filterData, $pagination, $limit, $order_by);
@@ -97,10 +97,10 @@ class LiveStream{
     }
 
     /* Update live stream */
-    public function UpdateLiveStream($request, string $image_path='', int $stream_id, string $wowza_id){
+    public function UpdateLiveStream(array $request = [], int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
-                $response = $this->livestream->update($request, $image_path, $stream_id, $wowza_id);
+                $response = $this->livestream->update($request, $stream_id, $wowza_id);
             }else{
                 $response = $this->livestream->TableError();
             }
