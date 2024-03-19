@@ -55,10 +55,10 @@ class LiveStream{
     }
 
     /* Store live stream */
-    public function StoreLiveStream($request){
+    public function StoreLiveStream($request, string $image_path = ''){
         if($this->config_status == true){
             if($this->table_status == true){
-                $response = $this->livestream->store($request);
+                $response = $this->livestream->store($request, $image_path);
             }else{
                 $response = $this->livestream->TableError();
             }
@@ -69,7 +69,7 @@ class LiveStream{
     }
 
     /* List of all live stream */
-    public function GetAllLiveStream($filterData=[], $pagination=true, $limit=10, $order_by=['created_at', 'desc']){
+    public function GetAllLiveStream(array $filterData=[], bool $pagination=true, int $limit=10, array $order_by=['created_at', 'desc']){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->listAll($filterData, $pagination, $limit, $order_by);
@@ -83,7 +83,7 @@ class LiveStream{
     }
 
     /* Get Single Live Stream  */
-    public function SingleLiveStream($stream_id, $wowza_id){
+    public function SingleLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->GetSingleLiveStream($stream_id, $wowza_id);
@@ -97,10 +97,10 @@ class LiveStream{
     }
 
     /* Update live stream */
-    public function UpdateLiveStream($request, $stream_id, $wowza_id){
+    public function UpdateLiveStream($request, string $image_path='', int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
-                $response = $this->livestream->update($request, $stream_id, $wowza_id);
+                $response = $this->livestream->update($request, $image_path, $stream_id, $wowza_id);
             }else{
                 $response = $this->livestream->TableError();
             }
@@ -111,7 +111,7 @@ class LiveStream{
     }
 
     /* Remove Live Stream */
-    public function RemoveLiveStream($stream_id, $wowza_id){
+    public function RemoveLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->remove($stream_id, $wowza_id);
@@ -125,7 +125,7 @@ class LiveStream{
     }
 
     /* Start live stream */
-    public function StartLiveStream($stream_id, $wowza_id){
+    public function StartLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->start($stream_id, $wowza_id);
@@ -139,7 +139,7 @@ class LiveStream{
     }
 
     /* Publish Live Stream */
-    public function PublishLiveStream($stream_id, $wowza_id){
+    public function PublishLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->publish($stream_id, $wowza_id);
@@ -153,7 +153,7 @@ class LiveStream{
     }
 
     /* Stop live stream */
-    public function StopLiveStream($stream_id, $wowza_id){
+    public function StopLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->stop($stream_id, $wowza_id);
@@ -167,7 +167,7 @@ class LiveStream{
     }
 
     /* Status of live stream */
-    public function StatusLiveStream($stream_id, $wowza_id){
+    public function StatusLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->status($stream_id, $wowza_id);
@@ -181,7 +181,7 @@ class LiveStream{
     }
 
     /* Statistics of live stream */
-    public function StatisticsLiveStream($stream_id, $wowza_id){
+    public function StatisticsLiveStream(int $stream_id, string $wowza_id){
         if($this->config_status == true){
             if($this->table_status == true){
                 $response = $this->livestream->statistics($stream_id, $wowza_id);

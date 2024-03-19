@@ -106,7 +106,7 @@ class LiveStreamingController extends Controller{
     }
 
     /* Store live stream */
-    public function store(Request $request){
+    public function store(Request $request, $image_path){
         $input = $request->all();
         $validator = Validator::make($request->all(), [
             'user_id'               => 'required|integer',
@@ -128,7 +128,7 @@ class LiveStreamingController extends Controller{
             $this->message = "Validation failed";
             $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
         }else{
-            $input['image'] = 'image path';
+            $input['image'] = $image_path;
             $inputdata['live_stream'] = [
                 "name"                  => $input['sname'],
                 "broadcast_location"    => $input['broadcast_location'],
@@ -235,7 +235,7 @@ class LiveStreamingController extends Controller{
     }
 
     /* Update live stream */
-    public function update(Request $request, $stream_id, $wowza_id){
+    public function update(Request $request, $image_path, $stream_id, $wowza_id){
         if(isset($stream_id) && is_numeric($stream_id)){
             if(isset($wowza_id)){
                 $input = $request->all();
@@ -258,7 +258,7 @@ class LiveStreamingController extends Controller{
                     $this->message = "Validation failed";
                     $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
                 }else{
-                    $input['image'] = 'image path';
+                    $input['image'] = $image_path;
                     /* model call */
                     $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
                     if(!is_null($singleStream) && $singleStream->state == 'stopped'){
