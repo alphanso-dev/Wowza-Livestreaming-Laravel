@@ -19,16 +19,27 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4|^8.0|^8.1|^8.2"
+        "php": "^7.4|^8.0|^8.1|^8.2",
+        "livestream/streaming": "@dev"
     },
     "required-dev":{
-        "php": "^7.4|^8.0|^8.1|^8.2"
+        "php": "^7.4|^8.0|^8.1|^8.2",
+        "livestream/streaming": "@dev"
     },
     "extra":{
         "laravel":{
             "providers":[
                 "Livestream\\Streaming\\LiveStreamServiceProvider"
             ]
+        }
+    },
+    "repositories": {
+        "streaming":{
+            "type":"path",
+            "url":"livestream/streaming",
+            "options":{
+                "symlink": true
+            }
         }
     }
 }
