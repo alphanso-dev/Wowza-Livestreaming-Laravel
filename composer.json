@@ -1,6 +1,6 @@
 {
     "name": "livestream/streaming",
-    "description": "This package is about live streaming",
+    "description": "This package is about live streaming package",
     "type": "library",
     "license": "MIT",
     "autoload": {
