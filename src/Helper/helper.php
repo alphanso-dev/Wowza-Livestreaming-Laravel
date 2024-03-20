@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 function RendomString($size=10, $type='mix'){
     /* Type : 'number','string','mix' */
@@ -48,4 +49,44 @@ function RunApi(string $url, string $method, array $data = []){
     curl_close ($ch);
     $output = json_decode($server_output);
     return $output;
+}
+
+/* Validation Response - request_type = store or update */
+function RequestValidation($request, $request_type='store'){
+    if($request_type == 'store'){
+        $validator = Validator::make($request, [
+            'user_id'               => 'required|integer',
+            'stream_title'			=> 'required|max:100',
+            'broadcast_location'	=> 'required',
+            'encoder'		        => 'required',
+            'description'			=> 'nullable|max:10000',
+            'image'					=> 'required',
+            'stream_price'			=> 'nullable|decimal:0,2',
+            'price_currency'        => 'required',
+            'stream_date'			=> 'required|date',
+            'stream_time'			=> 'required',
+        ],[
+            'stream_title.required' => 'stream title field is required'
+        ]);
+    }else{
+        $validator = Validator::make($request, [
+            'user_id'               => 'required|integer',
+            'stream_title'			=> 'required|max:100',
+            'encoder'		        => 'required',
+            'description'			=> 'nullable|max:10000',
+            'image'					=> 'required',
+            'stream_price'			=> 'nullable|decimal:0,2',
+            'price_currency'        => 'required',
+            'stream_date'			=> 'required|date',
+            'stream_time'			=> 'required',
+        ],[
+            'stream_title.required' => 'stream title field is required'
+        ]);
+    }
+    if ($validator->fails()) {
+        $response = ['status' => 0, 'message' => 'Validation Failed.', 'data' => $validator->errors()];
+    }else{
+        $response = ['status' => 1, 'messgae' => 'Validation Success.'];
+    }
+    return $response;
 }
