@@ -30,14 +30,5 @@
                 "Livestream\\Streaming\\LiveStreamServiceProvider"
             ]
         }
-    },
-    "repositories": {
-        "streaming":{
-            "type":"path",
-            "url":"livestream/streaming",
-            "options":{
-                "symlink": true
-            }
-        }
     }
 }
