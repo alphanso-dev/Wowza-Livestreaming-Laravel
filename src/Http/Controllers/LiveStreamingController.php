@@ -75,9 +75,9 @@ class LiveStreamingController extends Controller{
 			"us_west_oregon"			=> "US West Oregon"
 		];
         $this->status_code = 200;
-        $this->message = "Broadcast Location found";
-        $this->response = $broadcast_location;
-        return ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $this->response];
+        // $this->message = "";
+        // $this->response = $broadcast_location;
+        return ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Broadcast Location found', 'data' => $broadcast_location];
     }
 
     /* Camera encoder list */
@@ -106,9 +106,9 @@ class LiveStreamingController extends Controller{
 			// "file"						=> "File",
 		];
         $this->status_code = 200;
-        $this->message = "Camera Encoder found";
-        $this->response = $camera_encoder;
-        return ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $this->response];
+        // $this->message = "Camera Encoder found";
+        // $this->response = $camera_encoder;
+        return ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Camera Encoder found', 'data' => $camera_encoder];
     }
 
     /* Store live stream */
@@ -118,8 +118,8 @@ class LiveStreamingController extends Controller{
         $validator = RequestValidation($request, 'store');
         if ($validator['status'] == 0) {
             $this->status_code = 422;
-            $this->message = $validator['message'];
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator['data']];
+            //$this->message = $validator['message'];
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $validator['message'], 'data' => $validator['data']];
         }else{
             $inputdata['live_stream'] = [
                 "name"                  => $input['stream_title'],
@@ -182,23 +182,23 @@ class LiveStreamingController extends Controller{
                 $insert = $this->livestreammodel->InsertData($input);
                 if(isset($insert->wowza_id)) {
                     $this->status_code = 200;
-                    $this->message = "Live Stream create successully.";
-                    $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live Stream create successully.";
+                    $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live Stream create successully.'];
                 }else{
                     /* Wowza stream should be remove */
                     do{
                         $removeOutput = $this->wowzalivestream->WowzaLiveStreamApiRemove($outputData->id);
                     }while($removeOutput != null);
 
-                    $this->message = 'Live Stream not crete please try again.';
-                    $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = 'Live Stream not crete please try again.';
+                    $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream not crete please try again.'];
                 }
             }else if(isset($output->meta)) {
-                $this->message = $output->meta->message;
-                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                //$this->message = $output->meta->message;
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $output->meta->message];
             }else{
-                $this->message = 'Live Stream not crete please try again.';
-                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                //$this->message = 'Live Stream not crete please try again.';
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream not crete please try again.'];
             }
         }
         return $response;
@@ -214,11 +214,11 @@ class LiveStreamingController extends Controller{
         $data = $this->livestreammodel->ListData($filterData, $pagination, $limit, $order_by);
         if(count($data) > 0){
             $this->status_code = 200;
-            $this->message = "Live streams data found.";
-            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $data];
+            //$this->message = "Live streams data found.";
+            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live streams data found.', 'data' => $data];
         }else{
-            $this->message = "Live streams data not available.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $data];
+            //$this->message = "Live streams data not available.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live streams data not available.', 'data' => $data];
         }
         return $response;
     }
@@ -230,9 +230,9 @@ class LiveStreamingController extends Controller{
         if(!is_null($singleStream)){
             $wowzaData = $this->wowzalivestream->WowzaLiveStreamApiSingle($wowza_id);
             $this->status_code = 200;
-            $this->message = "Live stream found.";
-            $this->response = $singleStream;
-            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $singleStream, 'wowzaData' => $wowzaData];
+            // $this->message = "Live stream found.";
+            // $this->response = $singleStream;
+            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream found.', 'data' => $singleStream, 'wowzaData' => $wowzaData];
         }else{
             $this->message = "Live stream details not found.";
             $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
@@ -249,8 +249,8 @@ class LiveStreamingController extends Controller{
                 $validator = RequestValidation($request, 'update');
                 if ($validator['status'] == 0) {
                     $this->status_code = 422;
-                    $this->message = $validator['message'];
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator['data']];
+                    //$this->message = $validator['message'];
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $validator['message'], 'data' => $validator['data']];
                 }else{
                     /* model call to get stream data */
                     $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
@@ -306,34 +306,34 @@ class LiveStreamingController extends Controller{
                             $update = $this->livestreammodel->UpdateData($input, $stream_id, $wowza_id);
                             if($update) {
                                 $this->status_code = 200;
-                                $this->message = "Live Stream update successully.";
-                                $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                                //$this->message = "Live Stream update successully.";
+                                $response =  ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live Stream update successully.'];
                             }else{
-                                $this->message = 'Live Stream not update please try again.';
-                                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                                //$this->message = 'Live Stream not update please try again.';
+                                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream not update please try again.'];
                             }
                         }else if(isset($output->meta)) {
-                            $this->message = $output->meta->message;
-                            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                            //$this->message = $output->meta->message;
+                            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $output->meta->message];
                         }else{
-                            $this->message = 'Live Stream not crete please try again.';
-                            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                            //$this->message = 'Live Stream not crete please try again.';
+                            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream not crete please try again.'];
                         }
                     }else if(!is_null($singleStream) && $singleStream->state == 'started'){
-                        $this->message = "Live stream is started, please stop first and then update.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream is started, please stop first and then update.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream is started, please stop first and then update.'];
                     }else{
-                        $this->message = "Live stream details not found.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream details not found.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream details not found.'];
                     }
                 }
             }else{
-                $this->message = 'wowza_id is missing.';
-                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];    
+                //$this->message = 'wowza_id is missing.';
+                $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'wowza_id is missing.'];
             }
         }else{
-            $this->message = 'Either stream_id is missing or pass properly.';
-            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = 'Either stream_id is missing or pass properly.';
+            $response =  ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Either stream_id is missing or pass properly.'];
         }
         return $response;
     }
@@ -350,11 +350,11 @@ class LiveStreamingController extends Controller{
                 $delete = $this->livestreammodel->DeleteData($stream_id, $wowza_id);
                 if($delete){
                     $this->status_code = 200;
-                    $this->message = "Live stream remove successfully.";
-                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream remove successfully.";
+                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream remove successfully.'];
                 }else{
-                    $this->message = "Live stream is not remove, please try again.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream is not remove, please try again.";
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream is not remove, please try again.'];
                 }
             }else{
                 if($output->meta->status == 404){
@@ -362,23 +362,23 @@ class LiveStreamingController extends Controller{
                     $delete = $this->livestreammodel->DeleteData($stream_id, $wowza_id);
                     if($delete){
                         $this->status_code = 200;
-                        $this->message = "Live stream remove successfully.";
-                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream remove successfully.";
+                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream remove successfully.'];
                     }else{
-                        $this->message = "Live stream is not remove, please try again.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream is not remove, please try again.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream is not remove, please try again.'];
                     }
                 }else{
-                    $this->message = $output->meta->message;
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = $output->meta->message;
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => '$output->meta->message'];
                 }
             }
         }else if(!is_null($singleStream) && $singleStream->state == 'started'){
-            $this->message = "Live stream is started, please stop first and then remove.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Live stream is started, please stop first and then remove.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream is started, please stop first and then remove.'];
         }else{
-            $this->message = "Live stream details not found.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Live stream details not found.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream details not found.'];
         }
         return $response;
     }
@@ -400,11 +400,11 @@ class LiveStreamingController extends Controller{
                 if($update){
                     /* success response */
                     $this->status_code = 200;
-                    $this->message = "Live stream started";
-                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream started";
+                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream started'];
                 }else{
-                    $this->message = "Live stream not publishing, please try again.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream not publishing, please try again.";
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream not publishing, please try again.'];
                 }
             }else{
                 if($output->meta->status == 422){
@@ -413,23 +413,23 @@ class LiveStreamingController extends Controller{
                     if($update){
                         /* success response */
                         $this->status_code = 200;
-                        $this->message = "Live stream started";
-                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream started";
+                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream started'];
                     }else{
-                        $this->message = "Live stream not publishing, please try again.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream not publishing, please try again.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream not publishing, please try again.'];
                     }
                 }else{
-                    $this->message = $output->meta->message;
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = $output->meta->message;
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $output->meta->message];
                 }
             }
         }else if($streamData['status'] == 1 && isset($streamData['data']->state) && $streamData['data']->state == 'started'){
-            $this->message = "Live stream already started.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Live stream already started.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream already started.'];
         }else{
-            $this->message = "Something went wrong please try again.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Something went wrong please try again.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Something went wrong please try again.'];
         }
         return $response;
     }
@@ -443,8 +443,8 @@ class LiveStreamingController extends Controller{
                 if(isset($getStream->live_stream)) {
                     $streamStatus = $this->status($stream_id,$wowza_id);
                     if($streamStatus['status'] == 1 && isset($streamStatus['data']->live_stream) && $streamStatus['data']->live_stream->state != 'stopped'){
-                        $this->message = "Live Streaming is not started please try again.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live Streaming is not started please try again.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Streaming is not started please try again.'];
                     }
                     if(isset($streamStatus['data']->live_stream->state)){
                         if($streamStatus['data']->live_stream->state == 'started' || $streamStatus['data']->live_stream->state == 'starting' ){
@@ -454,30 +454,30 @@ class LiveStreamingController extends Controller{
 
                             /* Success response */
                             $this->status_code = 200;
-                            $this->message = "Live stream published";
-                            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => ['stream_id' => $stream_id, 'stream_data' => '']];
+                            //$this->message = "Live stream published";
+                            $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream published', 'data' => ['stream_id' => $stream_id]];
                         }else{
-                            $this->message = "Live Streaming is not started please try again.";
-                            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                            //$this->message = "Live Streaming is not started please try again.";
+                            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Streaming is not started please try again.'];
                         }
                     }else{
-                        $this->message = "Live Streaming is not started please try again.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live Streaming is not started please try again.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Streaming is not started please try again.'];
                     }
                 }else if(isset($getStream->meta)) {
-                    $this->message = $getStream->meta->message;
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = $getStream->meta->message;
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => '$getStream->meta->message'];
                 } else {
-                    $this->message = "Live Streaming is not started please try again.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live Streaming is not started please try again.";
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Streaming is not started please try again.'];
                 }
             }else{
-                $this->message = "Live Stream not publishing, please publish again.";
-                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];    
+                //$this->message = "Live Stream not publishing, please publish again.";
+                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream not publishing, please publish again.'];
             }
         }else{
-            $this->message = "Live Stream details not found.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Live Stream details not found.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live Stream details not found.'];
         }
         return $response;
     }
@@ -494,11 +494,11 @@ class LiveStreamingController extends Controller{
                 if($update){
                     /* Success response */
                     $this->status_code = 200;
-                    $this->message = "Live stream stopped.";
-                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream stopped.";
+                    $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream stopped.'];
                 }else{
-                    $this->message = "Live stream not stopped, please try again.";
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = "Live stream not stopped, please try again.";
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream not stopped, please try again.'];
                 }
             }else{
                 if($output->meta->status == 422){
@@ -508,20 +508,20 @@ class LiveStreamingController extends Controller{
                     if($update){
                         /* Success response */
                         $this->status_code = 200;
-                        $this->message = "Live stream stopped.";
-                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream stopped.";
+                        $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Live stream stopped.'];
                     }else{
-                        $this->message = "Live stream not stopped, please try again.";
-                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                        //$this->message = "Live stream not stopped, please try again.";
+                        $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream not stopped, please try again.'];
                     }
                 }else{
-                    $this->message = $output->meta->message;
-                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                    //$this->message = $output->meta->message;
+                    $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $output->meta->message];
                 }
             }
         }else{
-            $this->message = "Live stream already stopped.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Live stream already stopped.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Live stream already stopped.'];
         }
         return $response;
     }
@@ -535,18 +535,18 @@ class LiveStreamingController extends Controller{
             if(isset($output->live_stream)){
                 /* Success response */
                 $this->status_code = 200;
-                $this->message = "Status found.";
-                $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $output];
+                //$this->message = "Status found.";
+                $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Status found.', 'data' => $output];
             }else if($output->meta){
-                $this->message = $output->meta->message;
-                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];    
+                //$this->message = $output->meta->message;
+                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $output->meta->message];
             }else{
-                $this->message = "Status not found.";
-                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+                //$this->message = "Status not found.";
+                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Status not found.'];
             }
         }else{
-            $this->message = "Something went wrong please try again.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Something went wrong please try again.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Something went wrong please try again.'];
         }
         return $response;
     }
@@ -569,15 +569,15 @@ class LiveStreamingController extends Controller{
                 ];
                 /* Success response */
                 $this->status_code = 200;
-                $this->message = "Statistic details found.";
-                $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $res];    
+                //$this->message = "Statistic details found.";
+                $response = ['status' => $this->status_1, 'status_code' => $this->status_code, 'message' => 'Statistic details found.', 'data' => $res];
             }else{
-                $this->message = "Statistic details not found.";
-                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];    
+                //$this->message = "Statistic details not found.";
+                $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Statistic details not found.'];
             }
         }else{
-            $this->message = "Something went wrong please try again.";
-            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message];
+            //$this->message = "Something went wrong please try again.";
+            $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => 'Something went wrong please try again.'];
         }
         return $response;
     }
