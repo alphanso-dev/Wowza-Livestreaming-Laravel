@@ -18,7 +18,7 @@ class LiveStreamingController extends Controller{
     /* controller global variable */
     public $wowzalivestream;
 
-    /* common global variables */
+    /* common global variables - comment for testing */
     public $status_0 = 0;
     public $status_1 = 1;
     public $status_code = 202;
