@@ -114,7 +114,7 @@ class LiveStreamingController extends Controller{
             'broadcast_location'	=> 'required',
             'encoder'		        => 'required',
             'description'			=> 'nullable|max:10000',
-            'image'					=> 'required|mimes:jpeg,png,jpg,gif|max:2048',
+            'image'					=> 'required',
             'stream_price'			=> 'nullable|decimal:0,2',
             'price_currency'        => 'required',
             'stream_date'			=> 'required|date',
@@ -127,8 +127,7 @@ class LiveStreamingController extends Controller{
             $this->status_code = 422;
             $this->message = "Validation failed";
             $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
-        }else{dd('oh no');
-            $input['image'] = $input['image_path'];
+        }else{
             $inputdata['live_stream'] = [
                 "name"                  => $input['sname'],
                 "broadcast_location"    => $input['broadcast_location'],
@@ -244,7 +243,7 @@ class LiveStreamingController extends Controller{
                     'sname'			        => 'required|max:100',
                     'encoder'		        => 'required',
                     'description'			=> 'nullable|max:10000',
-                    'image'					=> 'nullable|mimes:jpeg,png,jpg,gif|max:2048',
+                    'image'					=> 'required',
                     'stream_price'			=> 'nullable|decimal:0,2',
                     'price_currency'        => 'required',
                     'stream_date'			=> 'required|date',
@@ -258,7 +257,6 @@ class LiveStreamingController extends Controller{
                     $this->message = "Validation failed";
                     $response = ['status' => $this->status_0, 'status_code' => $this->status_code, 'message' => $this->message, 'data' => $validator->errors()];
                 }else{
-                    $input['image'] = $input['image_path'];
                     /* model call */
                     $singleStream = $this->livestreammodel->GetSingleData($stream_id, $wowza_id);
                     if(!is_null($singleStream) && $singleStream->state == 'stopped'){
