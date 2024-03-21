@@ -32,8 +32,8 @@ Live streaming Using Wowza - Laravel Package
 
     - $livestream->CameraEncoder(); /* used to get all inbuilt camera encoder detail */
 
-    - $livestream->StoreLiveStream($request); /* to create live stream - here you have to pass array of parameters */
-        - Make sure belowe parameters are available in request array
+    - $livestream->StoreLiveStream($request=[]); /* to create live stream - here you have to pass array of parameters */
+        - Make sure below parameters are available in request array
             - "user_id"           => 1, /* here is your authenticated user id */
             -"stream_title"              => "stream title",
             -"broadcast_location" => "broadcast location name", /* this details you will get from '$livestream->BoradcastLocation()' this function */
@@ -58,7 +58,7 @@ Live streaming Using Wowza - Laravel Package
 
     - $livestream->SingleLiveStream($stream_id, $wowza_id); /* you have to pass both parameter to get single live stream - stream_id and wowza_id should be get from list api */
 
-    - $livestream->UpdateLiveStream($input, $stream_id, $wowza_id); /* you have to pass all parameter and you can get reference from above functions for parameter value - stream_id and wowza_id should be get from list api */
+    - $livestream->UpdateLiveStream($request=[], $stream_id, $wowza_id); /* you have to pass all parameter and you can get reference from above functions for parameter value - stream_id and wowza_id should be get from list api */
         - Make sure belowe parameters are available in request array
             - "user_id"           => 1, /* here is your authenticated user id */
             -"stream_title"              => "stream title",
