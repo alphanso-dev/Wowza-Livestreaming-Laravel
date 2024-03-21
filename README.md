@@ -28,7 +28,7 @@ Live streaming Using Wowza - Laravel Package
 
     - now you can call any functions from library which is given below
 
-    - $livestream->BoradcastLocation(); /* used to get all inbuilt broadcast location detail */
+    - $livestream->BroadcastLocation(); /* used to get all inbuilt broadcast location detail */
 
     - $livestream->CameraEncoder(); /* used to get all inbuilt camera encoder detail */
 
